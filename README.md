@@ -53,6 +53,17 @@ dataset/
     ...
 ```
 
+### ⚡ Automatic download (recommended)
+
+```bash
+pip install kagglehub          # already in requirements.txt
+python download_dataset.py
+```
+
+This downloads the dataset via `kagglehub`, copies `train/` + `valid/` straight
+into `dataset/`, and verifies class/image counts. No manual unzip needed.
+(A Kaggle login may be requested on first use.)
+
 ---
 
 ## 🚀 Installation

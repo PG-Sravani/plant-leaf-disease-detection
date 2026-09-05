@@ -11,3 +11,4 @@ tqdm
 keras-applications
 gradio
 IPython
+kagglehub

@@ -50,6 +50,12 @@ pip install -r requirements.txt
      valid/<class>/...jpg
    ```
 
+**Automatic option (recommended) — no manual download needed:**
+```bash
+python download_dataset.py
+```
+This uses `kagglehub` to fetch the dataset into `dataset/` automatically.
+
 ## 5. Pipeline (Steps in Code)
 
 | Step | Component | File / Function |
@@ -63,6 +69,9 @@ pip install -r requirements.txt
 
 ## 6. Execution
 ```bash
+# 0) Auto-download the dataset (once)
+python download_dataset.py
+
 # A) Full pipeline (GPU recommended, 38 classes)
 python plant_disease_detection.py
 
