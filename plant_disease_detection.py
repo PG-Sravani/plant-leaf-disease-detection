@@ -333,38 +333,77 @@ def evaluate_model(model, valid_flow, class_names, backbone):
 # 5. GRAD-CAM VISUALIZATION
 # ----------------------------------------------------------------
 def grad_cam(model, img_array, class_idx, layer_name=None):
-    """Produce a Grad-CAM heatmap overlay for interpreting predictions."""
-    # find last conv layer automatically if not provided
-    last_conv = None
+    """Produce a Grad-CAM heatmap for a transfer-learning model (Keras 3 compatible).
+
+    Keras 3.15 exposes layer .output only after a call and cannot reach layers
+    nested inside a base Functional via model.get_layer. We therefore rebuild
+    the forward graph manually: a bridge model on the base input produces both
+    the last-conv activations and the base features, a fresh classifier copies
+    the tail weights, and a two-tape chain-rule computes dP/d(conv) exactly.
+    """
+    # find the last conv layer, and the enclosing base sub-model
+    last_conv, base_parent = None, None
     for layer in reversed(model.layers):
         if isinstance(layer, layers.Conv2D):
-            last_conv = layer.name
+            last_conv, base_parent = layer, model
             break
-    target_layer = layer_name or last_conv
-    if target_layer is None:
+        if hasattr(layer, "layers"):
+            for sub in reversed(layer.layers):
+                if isinstance(sub, layers.Conv2D):
+                    last_conv, base_parent = sub, layer
+                    break
+        if last_conv:
+            break
+    if layer_name is not None:
+        for layer in model.layers:
+            chain = layer.layers if hasattr(layer, "layers") else [layer]
+            for cand in chain:
+                if cand.name == layer_name and isinstance(cand, layers.Conv2D):
+                    last_conv, base_parent = cand, layer
+        if last_conv is None:
+            raise ValueError("Layer %r not found / not a conv layer" % layer_name)
+    if last_conv is None:
         raise ValueError("No Conv layer found for Grad-CAM")
 
-    # Keras 3: expose Conv layer outputs through a functional sub-model
-    target = model.get_layer(target_layer)
-    try:
-        conv_out = target.output
-    except AttributeError:
-        conv_out = target.outputs[0]
+    base = base_parent if base_parent is not None else model
+    _ = model(np.ones((1, 224, 224, 3), dtype="float32"))  # warm call
 
-    grad_model = models.Model([model.input], [conv_out, model.output])
+    # 1) bridge model: conv activations + base feature map (same graph)
+    gmod = models.Model([base.input], [last_conv.output, base.output])
 
-    with tf.GradientTape() as tape:
-        conv_outputs, predictions = grad_model(np.expand_dims(img_array, 0))
-        pred_index = tf.argmax(predictions[0])
+    # 2) fresh classifier on top of the base features with copied weights
+    tail = [l for l in model.layers if l is not base]
+    inp = layers.Input(shape=tuple(base.output.shape[1:]))
+    x = inp
+    for l in tail:
+        x = l(x) if not isinstance(l, layers.Dropout) else layers.Dropout(l.rate)(x)
+    clf = models.Model(inp, x)
+    for new, old in zip(clf.layers[1:], tail):
+        new.set_weights(old.get_weights())
 
-    grads = tape.gradient(predictions[0, class_idx], conv_outputs)
-    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+    img = tf.convert_to_tensor(np.expand_dims(img_array, 0), dtype="float32")
+    img = tf.Variable(img)
+    gB = None
+    for _ in range(4):
+        with tf.GradientTape() as tape1:
+            A, B = gmod(img)
+            logits = clf(B)
+            gB = tape1.gradient(logits[0, class_idx], B)
+        if gB is not None:
+            break
+    if gB is None:
+        raise ValueError("gradient to base features is None")
+    with tf.GradientTape() as tape2:
+        A2, B2 = gmod(img)
+        loss = tf.reduce_sum(B2 * gB)
+    gA = tape2.gradient(loss, A2)
+    if gA is None:
+        raise ValueError("gradient to conv activations is None")
 
-    conv_outputs = conv_outputs[0]
-    heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
-    heatmap = tf.squeeze(heatmap)
-    heatmap = tf.maximum(heatmap, 0) / (tf.math.reduce_max(heatmap) + 1e-10)
-    return heatmap.numpy(), target_layer
+    weights = tf.reduce_mean(gA, axis=(0, 1, 2))
+    heatmap = tf.reduce_sum(A2[0] * weights[None, None, :], axis=-1)
+    heatmap = tf.maximum(heatmap, 0) / (tf.reduce_max(heatmap) + 1e-10)
+    return heatmap.numpy(), last_conv.name
 
 
 def visualize_gradcam(model, flow, class_names, backbone, num_samples=5):

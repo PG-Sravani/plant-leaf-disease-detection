@@ -115,6 +115,37 @@ def add_picture_center(slide, img_path, top=Inches(1.6), height=Inches(4.6)):
     return False
 
 
+def report_table(slide, left, top, width, rows):
+    """rows: list of (class, prec, rec, f1); first row is the header."""
+    n = len(rows)
+    gf = slide.shapes.add_table(n, 4, left, top, width, Inches(0.42) * n)
+    table = gf.table
+    table.columns[0].width = Inches(6.2)
+    table.columns[1].width = Inches(1.9)
+    table.columns[2].width = Inches(1.6)
+    table.columns[3].width = Inches(1.8)
+    for r, (name, prec, rec, f1v) in enumerate(rows):
+        vals = [name, prec, rec, f1v]
+        for c, v in enumerate(vals):
+            cell = table.cell(r, c)
+            cell.margin_top = Pt(1); cell.margin_bottom = Pt(1)
+            tf = cell.text_frame
+            p = tf.paragraphs[0]
+            p.text = str(v)
+            p.font.name = FONT
+            p.alignment = PP_ALIGN.LEFT if c == 0 else PP_ALIGN.CENTER
+            if r == 0:
+                cell.fill.solid(); cell.fill.fore_color.rgb = GREEN_MED
+                p.font.size = Pt(15); p.font.bold = True; p.font.color.rgb = WHITE
+            else:
+                cell.fill.solid()
+                cell.fill.fore_color.rgb = (GREEN_LIGHT if r % 2 == 0 else CREAM)
+                p.font.size = Pt(14)
+                p.font.bold = (name.startswith("macro"))
+                p.font.color.rgb = TEXT_DARK
+    return table
+
+
 # ==================================================================
 prs = Presentation()
 prs.slide_width = Inches(13.333)
@@ -299,19 +330,37 @@ footer(s, 12)
 # ---------- 13. GRAD-CAM -----------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Model Explainability — Grad-CAM")
-bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.4), [
+bullets(s, Inches(0.9), Inches(2.1), Inches(11.5), Inches(2.3), [
     ("Gradient-weighted Class Activation Mapping (Grad-CAM)", 0),
     ("Uses gradients of the target class flowing into the last conv layer to "
      "produce a heatmap of where the model \"looks\".", 0),
     ("Red/orange regions = image areas that most drive the prediction.", 0),
-    ("For leaf disease: heatmap focuses on lesion/spots instead of background.", 0),
-    ("Builds trust for agronomists and helps debug misclassifications.", 0),
-    ("Implemented in grad_cam() using a functional sub-model + GradientTape "
-     "(Keras 3 compatible).", 0),
-], size=17, spacing=10)
+    ("Implemented in grad_cam() (Keras 3 compatible, two-tape chain rule).", 0),
+], size=16, spacing=6)
+img = os.path.join(RESULTS_DIR, "gradcam_example.jpg")
+add_picture_center(s, img, top=Inches(3.35), height=Inches(3.35))
 footer(s, 13)
 
-# ---------- 14. WEB APP ------------------------------------------
+# ---------- 14. CLASSIFICATION REPORT ----------------------------
+s = prs.slides.add_slide(blank)
+header(s, "Classification Report (Validation, 7 Classes)")
+textbox(s, Inches(0.9), Inches(1.25), Inches(11.5), Inches(0.5),
+        "MobileNetV2 transfer model · 3,345 validation images · "
+        "accuracy 88.3%", size=14, color=TEXT_DARK)
+report_table(s, Inches(0.9), Inches(1.85), Inches(11.6), [
+    ("Class", "Precision", "Recall", "F1-score"),
+    ("Pepper — Bacterial spot", 0.79, 0.94, 0.86),
+    ("Pepper — healthy", 0.91, 0.84, 0.88),
+    ("Potato — Early blight", 0.96, 0.93, 0.94),
+    ("Potato — Late blight", 0.91, 0.81, 0.85),
+    ("Potato — healthy", 0.87, 0.93, 0.90),
+    ("Tomato — Late blight", 0.81, 0.92, 0.86),
+    ("Tomato — healthy", 0.98, 0.83, 0.90),
+    ("macro average", 0.89, 0.88, 0.88),
+])
+footer(s, 14)
+
+# ---------- 15. WEB APP ------------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Web Application — real-time prediction (Gradio)")
 bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
@@ -324,9 +373,9 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
     ("Earlier upload bug (4-channel images) found and fixed during testing",
      0),
 ], size=17, spacing=9)
-footer(s, 14)
+footer(s, 15)
 
-# ---------- 15. PROJECT STRUCTURE --------------------------------
+# ---------- 16. PROJECT STRUCTURE --------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Project Files & Structure")
 bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
@@ -341,9 +390,9 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
     ("models/ — trained .keras weights + class_names.json", 0),
     ("Dataset: ./dataset/train (70,295) · ./dataset/valid (17,572)", 0),
 ], size=16, spacing=8)
-footer(s, 15)
+footer(s, 16)
 
-# ---------- 16. REPO ---------------------------------------------
+# ---------- 17. REPO ---------------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "GitHub Repository")
 textbox(s, Inches(1.0), Inches(2.0), Inches(11.3), Inches(1.0),
@@ -354,9 +403,9 @@ bullets(s, Inches(1.5), Inches(3.4), Inches(10.3), Inches(3.4), [
     ("Commits trace the full workflow: setup → data → training → demo → fix", 0),
     ("Clone & reproduce:  git clone https://github.com/PG-Sravani/…", 0),
 ], size=17, spacing=8)
-footer(s, 16)
+footer(s, 17)
 
-# ---------- 17. CONCLUSION ---------------------------------------
+# ---------- 18. CONCLUSION ---------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Conclusion & Learning Outcomes")
 bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.4), [
@@ -371,9 +420,9 @@ bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.4), [
     ("Real bug-fixing experience: dataset cache structure, Keras 3 API "
      "changes, and RGBA image upload handling.", 0),
 ], size=17, spacing=10)
-footer(s, 17)
+footer(s, 18)
 
-# ---------- 18. FUTURE WORK --------------------------------------
+# ---------- 19. FUTURE WORK --------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Future Work")
 bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.0), [
@@ -385,9 +434,9 @@ bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.0), [
     ("Add confidence-based \"uncertain\" flagging to flag uncertain cases "
      "for expert review.", 0),
 ], size=17, spacing=10)
-footer(s, 18)
+footer(s, 19)
 
-# ---------- 19. THANK YOU ----------------------------------------
+# ---------- 20. THANK YOU ----------------------------------------
 s = prs.slides.add_slide(blank)
 add_bg(s, GREEN_DARK)
 tb = s.shapes.add_textbox(Inches(1.2), Inches(2.8), Inches(10.9), Inches(1.6))
