@@ -55,12 +55,21 @@ def main():
     import gradio as gr
 
     def predict(img):
-        img = np.array(img)
-        img = kimage.smart_resize(img, (224, 224))
-        img = np.expand_dims(img, 0) / 255.0
-        probs = model.predict(img, verbose=0)[0]
-        top = np.argsort(probs)[::-1]
-        return {class_names[i]: float(probs[i]) for i in top[:5]}
+        try:
+            from PIL import Image
+            # Gradio can hand us either a PIL Image or a numpy array
+            if not isinstance(img, Image.Image):
+                img = Image.fromarray(img)
+            if img.mode != "RGB":
+                img = img.convert("RGB")           # drop alpha / convert B/W
+            arr = np.array(img)
+            arr = kimage.smart_resize(arr, (224, 224))
+            inp = np.expand_dims(arr, 0) / 255.0
+            probs = model.predict(inp, verbose=0)[0]
+            top = np.argsort(probs)[::-1]
+            return {class_names[i]: float(probs[i]) for i in top[:5]}
+        except Exception as e:
+            return {"error": f"Prediction failed: {str(e)}"}
 
     demo = gr.Interface(
         fn=predict,
