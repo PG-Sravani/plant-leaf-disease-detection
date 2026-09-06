@@ -20,6 +20,7 @@ matching your folder names under the train/ directory).
 
 import os
 import glob
+import json
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -140,6 +141,12 @@ def main():
     for n, i in train_flow.class_indices.items():
         class_names[i] = n
     print("\nClasses:", class_names)
+
+    # Save class mapping alongside the model for later use in the web demo
+    model_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(model_dir, "models", "class_names.json"), "w") as fp:
+        json.dump(class_names, fp, indent=2)
+    print("[INFO] Saved class_names.json")
 
     # ---- Build transfer model ----
     if MODEL_NAME == "EfficientNetB0":

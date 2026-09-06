@@ -9,13 +9,14 @@ venv/
 env/
 .venv/
 
-# Dataset / models / outputs (large files - keep repo lean)
+# Dataset / large binary artifacts (keep repo lean)
 dataset/
-models/
-results/
-*.keras
-*.h5
 *.tflite
+
+# Committed: models/ and results/ contain trained artifacts for reproduction
+!models/*.keras
+!models/class_names.json
+!results/*.png
 
 # Gradio / Jupyter
 .ipynb_checkpoints/
@@ -23,3 +24,7 @@ results/
 # OS
 Thumbs.db
 .DS_Store
+
+# Logs
+*_log.txt
+*_err.txt

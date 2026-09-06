@@ -103,11 +103,14 @@ python plant_disease_detection_quick.py
 
 This trains a transfer-learning model on a handful of classes in minutes.
 
-### Option C — Real-time Web Demo (after training)
+### Option C — Real-time Web Demo
 
-The scripts will launch Gradio automatically if you answer `y` at the prompt.
-To run the demo separately with a saved model, see `plant_disease_detection.py`
-function `build_gradio_app`.
+```bash
+python run_demo.py          # loads trained model, opens http://127.0.0.1:7860
+```
+
+Or answer `y` at the end of the training scripts to launch the demo
+automatically.
 
 ---
 

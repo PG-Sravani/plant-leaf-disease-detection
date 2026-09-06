@@ -344,9 +344,14 @@ def grad_cam(model, img_array, class_idx, layer_name=None):
     if target_layer is None:
         raise ValueError("No Conv layer found for Grad-CAM")
 
-    grad_model = models.Model(
-        [model.inputs[0]],
-        [model.get_layer(target_layer).output, model.output])
+    # Keras 3: expose Conv layer outputs through a functional sub-model
+    target = model.get_layer(target_layer)
+    try:
+        conv_out = target.output
+    except AttributeError:
+        conv_out = target.outputs[0]
+
+    grad_model = models.Model([model.input], [conv_out, model.output])
 
     with tf.GradientTape() as tape:
         conv_outputs, predictions = grad_model(np.expand_dims(img_array, 0))
