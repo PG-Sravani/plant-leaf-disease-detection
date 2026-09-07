@@ -375,7 +375,27 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
 ], size=17, spacing=9)
 footer(s, 15)
 
-# ---------- 16. PROJECT STRUCTURE --------------------------------
+# ---------- 16. SAMPLE OUTPUT ------------------------------------
+s = prs.slides.add_slide(blank)
+header(s, "Sample Output — Disease Prediction")
+img = os.path.join(RESULTS_DIR, "output_sample.png")
+if os.path.isfile(img):
+    from PIL import Image as _PILImage
+    _w, _h = _PILImage.open(img).size
+    _height = 4.4
+    _width = _height * (_w / _h)
+    left = (13.333 - _width) / 2
+    s.shapes.add_picture(img, Inches(left), Inches(1.8), width=Inches(_width), height=Inches(_height))
+else:
+    textbox(s, Inches(3.5), Inches(3.0), Inches(6), Inches(1),
+            "[image missing: output_sample.png]", size=14, color=ACCENT)
+textbox(s, Inches(1.0), Inches(6.5), Inches(11.3), Inches(0.8),
+        "Uploaded leaf photo → predicted disease + confidence, rendered by the "
+        "Gradio web application (runtime screenshot)",
+        size=14, color=TEXT_DARK, align=PP_ALIGN.CENTER)
+footer(s, 16)
+
+# ---------- 17. PROJECT STRUCTURE --------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Project Files & Structure")
 bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
@@ -390,9 +410,9 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
     ("models/ — trained .keras weights + class_names.json", 0),
     ("Dataset: ./dataset/train (70,295) · ./dataset/valid (17,572)", 0),
 ], size=16, spacing=8)
-footer(s, 16)
+footer(s, 17)
 
-# ---------- 17. REPO ---------------------------------------------
+# ---------- 18. REPO ---------------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "GitHub Repository")
 textbox(s, Inches(1.0), Inches(2.0), Inches(11.3), Inches(1.0),
@@ -403,9 +423,9 @@ bullets(s, Inches(1.5), Inches(3.4), Inches(10.3), Inches(3.4), [
     ("Commits trace the full workflow: setup → data → training → demo → fix", 0),
     ("Clone & reproduce:  git clone https://github.com/PG-Sravani/…", 0),
 ], size=17, spacing=8)
-footer(s, 17)
+footer(s, 18)
 
-# ---------- 18. CONCLUSION ---------------------------------------
+# ---------- 19. CONCLUSION ---------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Conclusion & Learning Outcomes")
 bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.4), [
@@ -420,9 +440,9 @@ bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.4), [
     ("Real bug-fixing experience: dataset cache structure, Keras 3 API "
      "changes, and RGBA image upload handling.", 0),
 ], size=17, spacing=10)
-footer(s, 18)
+footer(s, 19)
 
-# ---------- 19. FUTURE WORK --------------------------------------
+# ---------- 20. FUTURE WORK --------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Future Work")
 bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.0), [
@@ -434,9 +454,9 @@ bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.0), [
     ("Add confidence-based \"uncertain\" flagging to flag uncertain cases "
      "for expert review.", 0),
 ], size=17, spacing=10)
-footer(s, 19)
+footer(s, 20)
 
-# ---------- 20. THANK YOU ----------------------------------------
+# ---------- 21. THANK YOU ----------------------------------------
 s = prs.slides.add_slide(blank)
 add_bg(s, GREEN_DARK)
 tb = s.shapes.add_textbox(Inches(1.2), Inches(2.8), Inches(10.9), Inches(1.6))
