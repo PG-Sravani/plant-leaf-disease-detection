@@ -112,6 +112,25 @@ python run_demo.py          # loads trained model, opens http://127.0.0.1:7860
 Or answer `y` at the end of the training scripts to launch the demo
 automatically.
 
+### Option D — Hybrid-backend Web Demo (MobileNetV3 + Vision Transformer)
+
+A second, more advanced backend is included, adapted from
+[Vidhi-Garg11/AI-Crop-Disease-Detection](https://github.com/Vidhi-Garg11/AI-Crop-Disease-Detection).
+It serves predictions from a pretrained **25-class** PyTorch checkpoint
+(`hybrid/hybrid_model_best.pth`) using the same style of upload UI.
+
+```bash
+# one-time setup (CPU wheels)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+python run_demo_hybrid.py   # opens http://127.0.0.1:7860
+```
+
+Model: MobileNetV3-Large CNN → 1×1 projection → positional embeddings →
+2 transformer encoder blocks → classification head (3.7M params).
+Preprocessing: bilateral filter → vegetation indices (ExG/ExR) →
+ImageNet normalization. See `hybrid/hybrid_backend.py`.
+
 ---
 
 ## 🧠 Models Included

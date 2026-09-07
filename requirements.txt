@@ -12,3 +12,9 @@ keras-applications
 gradio
 IPython
 kagglehub
+opencv-python-headless
+
+# Hybrid backend (run_demo_hybrid.py): MobileNetV3-Large + Vision Transformer
+# CPU wheels: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision

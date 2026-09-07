@@ -282,7 +282,29 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.3), [
 ], size=17, spacing=9)
 footer(s, 8)
 
-# ---------- 9. TRAINING CONFIG ------------------------------------
+# ---------- 9. HYBRID BACKEND -------------------------------------
+s = prs.slides.add_slide(blank)
+header(s, "Hybrid Backend — MobileNetV3 + Vision Transformer")
+bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(3.9), [
+    ("Integrated as the web-app prediction engine (PyTorch, CPU):", 0),
+    ("MobileNetV3-Large CNN backbone → 1×1 projection (embed 160)", 1),
+    ("49 spatial tokens + learned positional embedding", 1),
+    ("2 Transformer encoder blocks (self-attention + MLP)", 1),
+    ("LayerNorm → mean-pool → classification head (25 PlantVillage "
+     "classes)", 1),
+    ("Pretrained checkpoint: 3.7M params, 45 MB, 25 classes", 0),
+    ("Preprocessing: bilateral filter → vegetation indices (ExG/ExR) → "
+     "ImageNet normalization", 0),
+], size=17, spacing=8)
+textbox(s, Inches(0.9), Inches(5.6), Inches(11.5), Inches(1.3),
+        "Verified here on CPU: Potato & pepper disease images detected at "
+        "90–100%, healthy-vs-healthy between crops remains difficult (e.g. "
+        "potato healthy ~49%). Source: github.com/Vidhi-Garg11/"
+        "AI-Crop-Disease-Detection",
+        size=13, color=TEXT_DARK, align=PP_ALIGN.CENTER)
+footer(s, 9)
+
+# ---------- 10. TRAINING CONFIG ------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Training Configuration")
 bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.4), [
@@ -296,9 +318,9 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.4), [
     ("ModelCheckpoint — saves best model to models/*.keras", 1),
     ("Quick demo run: 10 epochs, MobileNetV2, 840 train / 420 valid images", 0),
 ], size=17, spacing=8)
-footer(s, 9)
+footer(s, 10)
 
-# ---------- 10. RESULTS SUMMARY ----------------------------------
+# ---------- 11. RESULTS SUMMARY ----------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Results Summary")
 bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.4), [
@@ -311,23 +333,23 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.4), [
     ("Evaluations produced automatically: classification report, confusion "
      "matrix, ROC curves", 0),
 ], size=17, spacing=9)
-footer(s, 10)
+footer(s, 11)
 
-# ---------- 11. TRAINING CURVES ----------------------------------
+# ---------- 12. TRAINING CURVES ----------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Training & Validation Curves")
 img = os.path.join(RESULTS_DIR, "training_curve_subset.png")
 add_picture_center(s, img, top=Inches(1.7), height=Inches(4.9))
-footer(s, 11)
+footer(s, 12)
 
-# ---------- 12. CONFUSION MATRIX ---------------------------------
+# ---------- 13. CONFUSION MATRIX ---------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Confusion Matrix (Validation)")
 img = os.path.join(RESULTS_DIR, "confusion_matrix_subset.png")
 add_picture_center(s, img, top=Inches(1.7), height=Inches(4.9))
-footer(s, 12)
+footer(s, 13)
 
-# ---------- 13. GRAD-CAM -----------------------------------------
+# ---------- 14. GRAD-CAM -----------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Model Explainability — Grad-CAM")
 bullets(s, Inches(0.9), Inches(2.1), Inches(11.5), Inches(2.3), [
@@ -339,9 +361,9 @@ bullets(s, Inches(0.9), Inches(2.1), Inches(11.5), Inches(2.3), [
 ], size=16, spacing=6)
 img = os.path.join(RESULTS_DIR, "gradcam_example.jpg")
 add_picture_center(s, img, top=Inches(3.35), height=Inches(3.35))
-footer(s, 13)
+footer(s, 14)
 
-# ---------- 14. CLASSIFICATION REPORT ----------------------------
+# ---------- 15. CLASSIFICATION REPORT ----------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Classification Report (Validation, 7 Classes)")
 textbox(s, Inches(0.9), Inches(1.25), Inches(11.5), Inches(0.5),
@@ -358,13 +380,15 @@ report_table(s, Inches(0.9), Inches(1.85), Inches(11.6), [
     ("Tomato — healthy", 0.98, 0.83, 0.90),
     ("macro average", 0.89, 0.88, 0.88),
 ])
-footer(s, 14)
+footer(s, 15)
 
-# ---------- 15. WEB APP ------------------------------------------
+# ---------- 16. WEB APP ------------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Web Application — real-time prediction (Gradio)")
 bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
     ("run_demo.py loads models/…keras + class_names.json and starts a server", 0),
+    ("run_demo_hybrid.py — second server powered by the 25-class hybrid "
+     "checkpoint (same upload UI)", 1),
     ("Browser UI at http://127.0.0.1:7860", 1),
     ("Upload a leaf photo → top-5 disease predictions with confidence %", 1),
     ("Handles common image formats; converts RGBA/B&W uploads to RGB", 1),
@@ -373,9 +397,9 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
     ("Earlier upload bug (4-channel images) found and fixed during testing",
      0),
 ], size=17, spacing=9)
-footer(s, 15)
+footer(s, 16)
 
-# ---------- 16. SAMPLE OUTPUT ------------------------------------
+# ---------- 17. SAMPLE OUTPUT ------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Sample Output — Disease Prediction")
 img = os.path.join(RESULTS_DIR, "output_sample.png")
@@ -393,15 +417,17 @@ textbox(s, Inches(1.0), Inches(6.5), Inches(11.3), Inches(0.8),
         "Uploaded leaf photo → predicted disease + confidence, rendered by the "
         "Gradio web application (runtime screenshot)",
         size=14, color=TEXT_DARK, align=PP_ALIGN.CENTER)
-footer(s, 16)
+footer(s, 17)
 
-# ---------- 17. PROJECT STRUCTURE --------------------------------
+# ---------- 18. PROJECT STRUCTURE --------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Project Files & Structure")
 bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
     ("plant_disease_detection.py — full 38-class pipeline (all models, "
      "Grad-CAM, evaluation)", 0),
     ("plant_disease_detection_quick.py — CPU-friendly 7-class training", 0),
+    ("hybrid/hybrid_backend.py + hybrid_model_best.pth — MobileNetV3+ViT "
+     "backend (PyTorch)", 0),
     ("download_dataset.py — automatic Kaggle download", 0),
     ("run_demo.py — Gradio web application", 0),
     ("requirements.txt — dependencies", 0),
@@ -410,9 +436,9 @@ bullets(s, Inches(0.9), Inches(1.5), Inches(12.0), Inches(5.5), [
     ("models/ — trained .keras weights + class_names.json", 0),
     ("Dataset: ./dataset/train (70,295) · ./dataset/valid (17,572)", 0),
 ], size=16, spacing=8)
-footer(s, 17)
+footer(s, 18)
 
-# ---------- 18. REPO ---------------------------------------------
+# ---------- 19. REPO ---------------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "GitHub Repository")
 textbox(s, Inches(1.0), Inches(2.0), Inches(11.3), Inches(1.0),
@@ -423,9 +449,9 @@ bullets(s, Inches(1.5), Inches(3.4), Inches(10.3), Inches(3.4), [
     ("Commits trace the full workflow: setup → data → training → demo → fix", 0),
     ("Clone & reproduce:  git clone https://github.com/PG-Sravani/…", 0),
 ], size=17, spacing=8)
-footer(s, 18)
+footer(s, 19)
 
-# ---------- 19. CONCLUSION ---------------------------------------
+# ---------- 20. CONCLUSION ---------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Conclusion & Learning Outcomes")
 bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.4), [
@@ -440,9 +466,9 @@ bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.4), [
     ("Real bug-fixing experience: dataset cache structure, Keras 3 API "
      "changes, and RGBA image upload handling.", 0),
 ], size=17, spacing=10)
-footer(s, 19)
+footer(s, 20)
 
-# ---------- 20. FUTURE WORK --------------------------------------
+# ---------- 21. FUTURE WORK --------------------------------------
 s = prs.slides.add_slide(blank)
 header(s, "Future Work")
 bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.0), [
@@ -454,9 +480,9 @@ bullets(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(5.0), [
     ("Add confidence-based \"uncertain\" flagging to flag uncertain cases "
      "for expert review.", 0),
 ], size=17, spacing=10)
-footer(s, 20)
+footer(s, 21)
 
-# ---------- 21. THANK YOU ----------------------------------------
+# ---------- 22. THANK YOU ----------------------------------------
 s = prs.slides.add_slide(blank)
 add_bg(s, GREEN_DARK)
 tb = s.shapes.add_textbox(Inches(1.2), Inches(2.8), Inches(10.9), Inches(1.6))

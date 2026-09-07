@@ -28,3 +28,12 @@ Thumbs.db
 # Logs
 *_log.txt
 *_err.txt
+demo_e.txt
+demo_out.txt
+hybrid_e*.txt
+hybrid_err*.txt
+
+# Unrelated projects that live in the same workspace folder
+outputs/
+reports/
+railway_track_detection/
