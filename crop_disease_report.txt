@@ -1,0 +1,155 @@
+
+===== PAGE 1 =====
+CIA-3 COMPONENT-1 | CSEDS743E04
+AI-Based Crop Disease Detection and Health 
+Monitoring System
+Using Image Processing and Deep Learning
+Subject Name: Image and Video Analytics
+Mentor: Prof Shruti Jalapur
+Department of Computer Science and Engineering
+
+===== PAGE 2 =====
+Nearly 20-40% of global crop production is 
+lost every year due to plant diseases, 
+pests, and environmental stresses.
+— Global Agricultural Reports
+"
+"
+
+===== PAGE 3 =====
+Project Architecture
+A comprehensive approach integrating computer vision, spatial localization, 
+hybrid deep learning, and explainable AI.
+
+===== PAGE 4 =====
+1. Baseline Detection
+Establishing robust classification models 
+(ResNet/EfficientNet) designed specifically to identify early-
+stage infections and subtle disease symptoms from 
+standard benchmark datasets.
+2. Spatial Localization
+Deploying advanced segmentation networks (U-
+Net/YOLOv8) to precisely isolate infected leaf regions from 
+complex environmental backgrounds, enabling accurate 
+severity estimation.
+3. Edge-Optimized Hybrid AI
+Fusing local feature extraction (MobileNetV3) with global 
+contextual reasoning (Vision Transformers) to create highly 
+accurate, computationally efficient models for real-time 
+deployment.
+4. Decision Support & XAI
+Integrating Grad-CAM visualization for model transparency, 
+alongside a rule-based engine that converts severity masks 
+into actionable crop treatment recommendations.
+Four Core Pillars of the Framework
+
+===== PAGE 5 =====
+Baseline Early Detection
+Lead: PG Sravani (2360429)
+We developed a robust architecture using ResNet and 
+EfficientNet. This foundation relies on data augmentation 
+strategies to enhance model sensitivity, ensuring the 
+accurate identification of early-stage infections and 
+subtle symptoms before widespread damage.
+
+===== PAGE 6 =====
+Lead: Dominic Andrew P (2360365)
+Architecture: A novel CNN-ViT Hybrid model fusing 
+MobileNetV3 for local feature extraction with a Vision 
+Transformer for global context.
+Preprocessing: Implementation of ExG/ExR vegetation 
+indices and Bilateral filtering to mitigate real-world noise.
+Efficiency: Designed to maintain high classification 
+accuracy while retaining a lightweight footprint for mobile 
+and drone edge deployment.
+■
+■
+■
+Edge-Optimized Hybrid Architecture
+
+===== PAGE 7 =====
+Lead: Aryaahi Singh (2360342)
+Overcoming Traditional Limitations
+Standard deep learning models often fail to isolate disease symptoms 
+from complex environmental backgrounds. By implementing precise 
+spatial localization models like YOLOv8 and U-Net, we accurately 
+segment infected regions. This filters out background noise and 
+provides the exact pixel ratio required to mathematically estimate 
+crop disease severity.
+Spatial Localization & Severity
+
+===== PAGE 8 =====
+Lead: Vidhi Garg (2360479)
+Visual Transparency
+Integration of Explainable AI (Grad-
+CAM) generates activation heatmaps, 
+visually highlighting the exact lesion 
+regions that triggered the model's 
+prediction, building trust with end-
+users.
+Disease Forecasting
+A predictive module that analyzes 
+current severity estimations to 
+forecast short-term disease 
+progression, allowing farmers to 
+anticipate and mitigate agricultural 
+risks.
+Treatment Engine
+Translates complex neural network 
+outputs and severity masks into 
+structured, personalized treatment 
+recommendations to optimize 
+pesticide application.
+Explainable AI & Decision Support
+
+===== PAGE 9 =====
+>99%
+Validation Accuracy
+Precision at the Edge
+The integrated system successfully bridges the gap between 
+laboratory performance and real-field application. By 
+modularizing segmentation, hybrid classification, and XAI, we 
+achieve exceptional accuracy while minimizing computational 
+latency, making smart farming accessible on low-cost devices.
+Key System Capabilities
+
+===== PAGE 10 =====
+Phase 1
+Setup preprocessing pipelines, 
+train baseline models, and 
+configure segmentation scripts.
+Phase 2
+Develop CNN-ViT hybrid fusion, 
+fine-tune for early symptoms, 
+and establish XAI logic.
+Phase 3
+Integrate severity mask 
+calculations and connect XAI 
+heatmaps to model outputs.
+Phase 4
+Final pipeline integration: 
+combining localization, 
+classification, and treatment 
+engines.
+Integration Strategy
+
+===== PAGE 11 =====
+
+
+===== PAGE 12 =====
+Thank You
+Questions & Discussion
+Image and Video Analytics | CSEDS743E04
+
+===== PAGE 13 =====
+https://media.istockphoto.com/id/2162522340/photo/rose-leaf-with-symptoms-of-fungal-disease-close-up-view-black-spot-of-rose-disease-caused-
+by.jpg?s=612x612&w=0&k=20&c=j7-wYMAXQ8G8GxYFQq_AGpsXwZQ4BErkLfepYo68n00=
+Source: www.istockphoto.com
+https://dronespraypro.com/cdn/shop/articles/69ae10de12de151ab0283e63-1773030026743.jpg?v=1773036723&width=1100
+Source: dronespraypro.com
+https://www.frontiersin.org/files/Articles/1211075/xml-images/fpls-14-1211075-g001.webp
+Source: www.frontiersin.org
+https://media.istockphoto.com/id/2162981379/photo/sunlit-young-corn-plants-on-an-open-field-at-
+sunset.jpg?s=612x612&w=0&k=20&c=clFiN7EhQTFAorjuU6h4O7StN85iPjvmouKn_ZS956M=
+Source: www.istockphoto.com
+Image Sources
